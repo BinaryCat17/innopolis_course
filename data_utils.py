@@ -50,13 +50,24 @@ def std_scale_features(X):
 def revert_std_scale(X, mean, std):
     return X * std + mean
 
-def take_random(X, Y, batch_size):
-    idx_batch = np.random.randint(0,X.shape[0],batch_size)
-    x_batch   = np.take(X, idx_batch, axis=0)
-    y_batch   = np.take(Y, idx_batch, axis=0)
-    return x_batch, y_batch
+def take_batches(X, Y, batch_size):
+    indices = np.random.permutation(X.shape[0])
+    num_batches = X.shape[0] // batch_size
 
-def split_test_train(X, Y, train_percent):
+    res_X = []
+    res_Y = []
+    for i in range(num_batches):
+        select_indices = indices[i * batch_size: (i + 1) * batch_size]
+        res_X.append(X[select_indices])
+        res_Y.append(Y[select_indices])
+
+    if(X.shape[0] - batch_size * num_batches):
+        select_indices = indices[num_batches * batch_size:]
+        res_X.append(X[select_indices])
+        res_Y.append(Y[select_indices])
+    return res_X, res_Y
+
+def split_test_train(X, Y, train_percent=0.8):
     train_count = int(X.shape[0] * train_percent)
     indices = np.random.permutation(X.shape[0])
     train_indices = indices[:train_count]
