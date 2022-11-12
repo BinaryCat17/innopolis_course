@@ -109,7 +109,7 @@ class Pipeline:
         return pcopy
     
     def compose_apply(name, pipe, pipes, **args):
-        return Pipeline.compose("", pipes).apply(pipe.copy(name, True), **args)
+        return Pipeline.compose(pipes).apply(pipe.copy(name, True), **args)
 
     # повторяем один и тотже пайплайн несколько раз
     def repeat(pipe, times, copy_data=False):

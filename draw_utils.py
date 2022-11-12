@@ -51,11 +51,20 @@ def draw_compare_stats(nstats=[], labels=[]):
                 stats = np.asarray(stats).reshape(-1)
 
         numbers = np.arange(0,len(stats))
-        if(len(labels) == 0):
-            tick_labels = [str(num) for num in numbers]
+        if(len(labels) <= len(stats)):
+            gen_labels_count = len(stats) - len(labels)
+            tick_labels = labels + [str(num) for num in np.arange(0, gen_labels_count)]
         else:
             tick_labels = labels
-        ax.bar(x = numbers, height = stats, label=str(nstats))
+
+        cc=['']*len(numbers)
+        for n,val in enumerate(stats):
+            if val<0:
+                cc[n]='red'
+            elif val>=0:
+                cc[n]='blue'
+
+        ax.bar(x = numbers, height = stats, label=str(nstats), color=cc)
         plt.xticks(np.arange(0,len(stats)), tick_labels)
 
     return do_draw_compare_stats

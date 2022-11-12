@@ -14,26 +14,25 @@ def std_noise(X, std):
     return X + np.random.normal(0.0, std, size=X.shape)
 
 def prepare_features(X, poly=1):
-    if(len(X.shape) == 1):
-        X = np.matrix(X).T
-    else:
-        X = np.matrix(X)
-
-    X_res = np.ones((X.shape[0], 1))
+    X_res = X
+    X_res = np.concatenate([X_res, np.ones((X.shape[0], 1))], axis=-1)
 
     for i in range(X.shape[1]):
         # создаём признаки для каждой степени (полиноминальная регрессия, как многопеременная линейная регрессия)
-        for p in range(1, poly + 1):
+        for p in range(2, poly + 1):
             # берём i-й столбец и возводим его в нужную степень
-            c = np.matrix(np.power(X[:,i], p))
+            c = to_mat(np.power(X[:,i], p))
             # добавляем возведённый в степень массив
             X_res = np.concatenate([X_res, c], axis=-1)
 
     return X_res
 
-def prepare_target(Y):
-    return np.matrix(Y).T
-
+def to_mat(X):
+    if(len(X.shape) == 1 or X.shape[0] == 1):
+        return np.matrix(X).T
+    else:
+        return np.matrix(X)
+    
 def minmax_features(X):
     min = np.min(X, axis=0)
     max = np.max(X, axis=0)
